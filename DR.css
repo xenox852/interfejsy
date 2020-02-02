@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+}
+
+.languages {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+.spacer {
+    flex-grow: 2;
+}
+
+#editor {
+    width: 100vw;
+    height: calc(100vh - 152px);
+}
+
+.index-background {
+    background: white;
+}
+
+.ms-editor canvas {
+position:absolute;
+}
+
+
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Projekt Dominik Rogosz W61693</title>
+		<link rel="stylesheet" href="DR.css">
+		<script type="text/javascript" src="myscript.min.js"></script>
+	</head>
+	<body>
+		<div class="languages">
+			<select id="language"></select>
+			<div class="button-div">
+				<button id="clear">
+					<img src="delete-512.png" style="    height: 40px; width: 40px;">
+				</button>
+				<div class="spacer"></div>
+			</div>
+		</div>
+		<div id="result" touch-action="none" style= "text-align: center; font-size: 40px;"></div>
+		<div id="editor"></div>
+</body>
+</html>
+
+<script>
+    
+  var editorElement = document.getElementById('editor');
+  var resultElement = document.getElementById('result');
+  var languageElement = document.getElementById('language');
+  var clearElement = document.getElementById('clear');
+  editorElement.addEventListener('exported', function (evt) {
+    var exports = evt.detail.exports;
+    if (exports && exports.TEXT) {
+    clearElement.disabled = false;
+    resultElement.innerHTML = '<span>' + exports.TEXT + '</span>';
+    } else {
+      clearElement.disabled = true;
+      resultElement.innerHTML = '';
+    }
+  });
+    
+  editorElement.addEventListener('loaded', function (evt) {
+    var currentLanguage = evt.target.editor.configuration.recognitionParams.v3.textParameter.language;
+    var res = MyScript.getAvailableLanguageList(editorElement.editor.configuration);
+
+    if (languageElement.options.length === 0) {
+      Object.keys(res.result).forEach(function (key) {
+        var selected = currentLanguage === key;
+        languageElement.options[languageElement.options.length] = new Option(res.result[key], key, selected, selected);
+      });
+    }
+  });
+  languageElement.addEventListener('change', function (e) {
+    var configuration = editorElement.editor.configuration;
+    configuration.recognitionParams.v3.textParameter.language = e.target.value;
+    editorElement.editor.configuration = configuration;
+  });
+     
+  clearElement.addEventListener('click', function () {
+    editorElement.editor.clear();
+  });
+ 
+  MyScript.register(editorElement, {
+    triggers: {
+      exportContent: 'QUIET_PERIOD'
+    },
+    recognitionParams: {
+      type: 'TEXT',
+      protocol: 'REST',
+      apiVersion: 'V3',
+      server: {
+        scheme: 'https',
+        host: 'webdemoapi.myscript.com',
+        applicationKey: '9c892f6f-2ee0-4f1c-b497-b56ebfacd7be',
+        hmacKey: 'e2cb2e6f-7586-4e3b-a392-f1bd864a578b'
+      }
+    }
+  });
+    
+  window.addEventListener('resize', function () {
+    editorElement.editor.resize();
+  });
+    
+</script>
+
